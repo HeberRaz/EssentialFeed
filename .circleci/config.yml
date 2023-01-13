@@ -9,43 +9,17 @@ jobs:
       FASTLANE_LANE: test
     steps:
       - checkout
-      - run: bundle install
-      - run:
-          name: Fastlane
-          command: cd ios, bundle exec fastlane $FASTLANE_LANE
-      - store_artifacts:
-          path: output
-      - store_test_results:
-          path: output/scan
       - run:
           name: Build and Run Tests
           command: fastlane scan 
           environment:
             SCAN_SCHEME: CI
-          
-
-  adhoc:
-    macos:
-      xcode: 14.0.0
-    environment:
-      FL_OUTPUT_DIR: output
-      FASTLANE_LANE: adhoc
-    steps:
-      - checkout
-      - run: bundle install
-      - run:
-          name: Fastlane
-          command: bundle exec fastlane $FASTLANE_LANE
       - store_artifacts:
           path: output
-
+      - store_test_results:
+          path: output/scan
 workflows:
-  build-test-adhoc:
+  version: 2
+  build-and-test:
     jobs:
       - build-and-test
-      - adhoc:
-          filters:
-            branches:
-              only: development
-          requires:
-            - build-and-test
